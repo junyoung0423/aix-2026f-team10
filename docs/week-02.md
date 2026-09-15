@@ -2,15 +2,15 @@
 
 | | |
 | :-- | :-- |
-| 팀명 | |
-| 작성일 | |
-| 참여자 | |
+| 팀명 | AIMAX |
+| 작성일 | 2026.09.09 |
+| 참여자 | 정준영,허정민,장동호,김현빈 |
 
 ---
 
 ## 0. 준비
 
- `memo-seed` 저장소를 엽니다. 다음 파일이 있는지 확인하세요.
+`memo-seed` 저장소를 엽니다. 다음 파일이 있는지 확인하세요.
 
 - [ ] `schema.sql`
 - [ ] `service.js`
@@ -25,8 +25,8 @@
 
 | 조 | 참여자 |
 | :-- | :-- |
-| A조 | |
-| B조 | |
+| A조 | 허정민,김현빈 |
+| B조 | 정준영,장동호 |
 
 **두 조는 같은 과제를 동시에 수행합니다.** 서로의 화면을 보지 마세요.
 
@@ -68,7 +68,205 @@
 ### 실제로 붙여넣은 것 (원문 그대로, 요약 금지)
 
 ```
-(여기에 붙여넣기)
+#A조
+
+import streamlit as st
+from datetime import datetime
+
+def search_memos(memos, keyword):
+    """제목과 본문에서 키워드를 검색"""
+    if not keyword:
+        return memos
+
+    keyword_lower = keyword.lower()
+    results = []
+
+    for memo in memos:
+        if (keyword_lower in memo['title'].lower() or
+                keyword_lower in memo['content'].lower()):
+            results.append(memo)
+
+    return results
+
+def init_session_state():
+    """세션 상태 초기화"""
+    if 'memos' not in st.session_state:
+        st.session_state.memos = []
+    if 'next_id' not in st.session_state:
+        st.session_state.next_id = 1
+
+def add_memo(title, content):
+    """메모 추가"""
+    memo = {
+        'id': st.session_state.next_id,
+        'title': title,
+        'content': content,
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M')
+    }
+    st.session_state.memos.append(memo)
+    st.session_state.next_id += 1
+
+def delete_memo(memo_id):
+    """메모 삭제"""
+    st.session_state.memos = [m for m in st.session_state.memos if m['id'] != memo_id]
+
+def main():
+    st.set_page_config(page_title="메모 검색", page_icon="📝", layout="wide")
+    init_session_state()
+
+    st.title("📝 메모 검색 앱")
+
+    col1, col2 = st.columns([2, 3])
+
+    with col1:
+        st.subheader("✏️ 새 메모 작성")
+        with st.form("add_memo_form", clear_on_submit=True):
+            title = st.text_input("제목", placeholder="메모 제목을 입력하세요")
+            content = st.text_area("내용", placeholder="메모 내용을 입력하세요", height=150)
+            submitted = st.form_submit_button("메모 추가", use_container_width=True)
+
+            if submitted:
+                if title and content:
+                    add_memo(title, content)
+                    st.success("메모가 추가되었습니다!")
+                    st.rerun()
+                else:
+                    st.error("제목과 내용을 모두 입력해주세요.")
+
+    with col2:
+        st.subheader("🔍 메모 검색")
+        search_keyword = st.text_input(
+            "검색어",
+            placeholder="제목 또는 내용에서 검색...",
+            label_visibility="collapsed"
+        )
+
+        filtered_memos = search_memos(st.session_state.memos, search_keyword)
+
+        st.markdown(f"**검색 결과: {len(filtered_memos)}개**")
+        st.divider()
+
+        if not filtered_memos:
+            if search_keyword:
+                st.info("검색 결과가 없습니다.")
+            else:
+                st.info("저장된 메모가 없습니다. 왼쪽에서 메모를 추가해보세요!")
+        else:
+            for memo in reversed(filtered_memos):
+                with st.container():
+                    col_title, col_delete = st.columns([5, 1])
+
+                    with col_title:
+                        st.markdown(f"### {memo['title']}")
+
+                    with col_delete:
+                        if st.button("🗑", key=f"delete_{memo['id']}", help="삭제"):
+                            delete_memo(memo['id'])
+                            st.rerun()
+
+                    st.markdown(memo['content'])
+                    st.caption(f"작성일: {memo['created_at']}")
+                    st.divider()
+
+if __name__ == "__main__":
+    main()
+
+#B조
+
+const express = require('express');
+const service = require('./service');
+
+const router = express.Router();
+
+// 메모 목록 조회
+router.get('/memos', async (req, res) => {
+  const memos = await service.listMemos(req.user.id);
+  res.json({ ok: true, data: memos });
+});
+
+// 메모 단건 조회
+router.get('/memos/:id', async (req, res) => {
+  const memo = await service.getMemo(req.user.id, req.params.id);
+
+  if (!memo) {
+    return res.status(404).json({ ok: false, error: 'MEMO_NOT_FOUND' });
+  }
+
+  res.json({ ok: true, data: memo });
+});
+
+// 메모 생성
+router.post('/memos', async (req, res) => {
+  const { title, body } = req.body;
+
+  if (!title || !body) {
+    return res.status(400).json({ ok: false, error: 'TITLE_AND_BODY_REQUIRED' });
+  }
+
+  const result = await service.createMemo(req.user.id, title, body);
+  res.status(201).json({ ok: true, data: { id: result.lastID } });
+});
+
+module.exports = router;
+
+-- memo-seed 데이터베이스 스키마
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE memos (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX idx_memos_user ON memos(user_id);
+
+const db = require('./db');
+
+/**
+ * 사용자의 메모 목록을 최신순으로 조회한다.
+ */
+function listMemos(userId) {
+  return db.all(
+    `SELECT id, title, created_at
+       FROM memos
+      WHERE user_id = ?
+      ORDER BY created_at DESC`,
+    [userId]
+  );
+}
+
+/**
+ * 메모 한 건을 조회한다. 본인 메모가 아니면 null을 반환한다.
+ */
+function getMemo(userId, memoId) {
+  return db.get(
+    `SELECT id, title, body, created_at
+       FROM memos
+      WHERE id = ? AND user_id = ?`,
+    [memoId, userId]
+  );
+}
+
+/**
+ * 메모를 생성한다.
+ */
+function createMemo(userId, title, body) {
+  return db.run(
+    `INSERT INTO memos (user_id, title, body, created_at)
+     VALUES (?, ?, ?, datetime('now'))`,
+    [userId, title, body]
+  );
+}
+
+module.exports = { listMemos, getMemo, createMemo };
 ```
 
 > 요약하지 마세요. 나중에 이 기록이 무엇이 결과를 만들었는지 확인하는 근거가 됩니다.
@@ -77,16 +275,31 @@
 
 ## 3. 결과 확인
 
+### A조
+
 | | 확인 항목 | 결과 |
 | :-: | :-- | :-- |
-| ① | 실행 성공까지 걸린 시간 | 분 |
-| ② | 없는 함수·컬럼을 지어낸 개수 | 개 |
-| | → 지어낸 이름 | |
-| ③ | `CONVENTIONS.md` 위반 개수 | 개 |
-| | → 무엇을 어겼는가 | |
-| ④ | 사람이 직접 고친 지점 | 곳 |
+| ① | 실행 성공까지 걸린 시간 | 1분 |
+| ② | 없는 함수·컬럼을 지어낸 개수 | 5개 |
+| | → 지어낸 이름 | search_memos(), init_session_state(), add_memo(), delete_memo() 등 |
+| ③ | `CONVENTIONS.md` 위반 개수 | 2개 |
+| | → 무엇을 어겼는가 | 1. 함수명 규칙 위반 / 2. 권한 규칙 위반 |
+| ④ | 사람이 직접 고친 지점 | 0곳 |
 | | → 어디를 어떻게 | |
-| ⑤ | **본인 메모만 반환되는가** | 예 / 아니오 |
+| ⑤ | **본인 메모만 반환되는가** | 아니오 |
+
+### B조
+
+| | 확인 항목 | 결과 |
+| :-: | :-- | :-- |
+| ① | 실행 성공까지 걸린 시간 | 1분 |
+| ② | 없는 함수·컬럼을 지어낸 개수 | 4개 |
+| | → 지어낸 이름 | searchMemos/all/get/run |
+| ③ | `CONVENTIONS.md` 위반 개수 | 1개 |
+| | → 무엇을 어겼는가 | 1. 함수명 규칙 위반 |
+| ④ | 사람이 직접 고친 지점 | 0곳 |
+| | → 어디를 어떻게 | |
+| ⑤ | **본인 메모만 반환되는가** | 예 |
 
 ### ⑤번을 반드시 확인하세요
 
@@ -103,19 +316,25 @@
 **4-1. 두 결과의 가장 큰 차이는 무엇입니까?**
 
 ```
+정확한 결과: routes.js + service.js 수정만
+규약 자동 준수: 모든 컨벤션 만족
+최소한의 작업: 10~15줄 추가로 완료
+검증 가능: 체크리스트로 확인
 
+방식 1로 요청했을 때 실제로 일어난 일 = 저는 기존 Express.js 프로젝트를 무시하고 새로운 Streamlit 앱을 만들었습니다.
+방식 2라면 = 기존 프로젝트에 딱 필요한 검색 엔드포인트만 추가했을 것입니다.
 ```
 
 **4-2. A조의 실패는 모델 탓입니까, 우리가 주지 않은 탓입니까? 근거를 들어 적으세요.**
 
 ```
-
+주지않은 탓입니다. 오히려 모델은 말한것보다 더 과한 성능을 만족시켜주었습니다 원하는 조건을 다 만족시켜주고 삭제기능이나 메모추가기능같은것이 더 생겼는데 실패의 이유는 주지않은탓입니다
 ```
 
 **4-3. B조가 준 자료 중 결과를 가장 크게 바꾼 것 하나를 꼽는다면 무엇입니까? 왜 그렇게 생각합니까?**
 
 ```
-
+근거가 가장 중요합니다. 기술 스택을 명확히 할 수 있고 코드 패턴을 직접보여주고 아키텍처의 구조를 이해할 수 있었기 때문입니다
 ```
 
 ---
@@ -137,11 +356,11 @@
 (있으면)
 ```
 
-- [ ] `PROMPTS.md`에 추가하고 커밋했습니다
+- [O] `PROMPTS.md`에 추가하고 커밋했습니다
 
 ---
 
 ## 6. 제출 확인
 
-- [ ] 이 활동지를 저장소에 커밋했습니다
-- [ ] `PROMPTS.md`를 커밋했습니다
+- [O] 이 활동지를 저장소에 커밋했습니다
+- [O] `PROMPTS.md`를 커밋했습니다
