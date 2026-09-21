@@ -148,8 +148,8 @@ Log only what actually made it into your work — not every question you asked.
 AI가 만들어준 문제 후보에는 **사용자가 없습니다.** 그럴듯한 문장만 있습니다.
 그대로 1절에 옮기면 ’가짜 사용자형’이 됩니다. 사용자는 여러분이 찾아야 합니다.
 > 
-- [ ]  해당 건을 `PROMPTS.md`에 기록했다 / Logged in `PROMPTS.md`
-- [ ]  산출물에 들어간 AI 결과물이 없다 / Nothing from AI made it into our work
+- [o]  해당 건을 `PROMPTS.md`에 기록했다 / Logged in `PROMPTS.md`
+- [o]  산출물에 들어간 AI 결과물이 없다 / Nothing from AI made it into our work
 
 ---
 
