@@ -1,44 +1,66 @@
+# week-04
+
 # 4주차 활동지 / Week 4 Worksheet
 
 **주제 선택과 요구 명세 / Choosing a problem & writing the spec**
 
 - 작성일 / Date: 2026/09/23
-- 참여자 / Present: 정준영, 허정민, 장동호, 김현빈
+- 참여자 / Present: 정준영,허정민,장동호,김현빈
 
 ---
 
 ## ① 주제 선택 / Choosing one problem
 
 | 항목 Item | 내용 |
-|---|---|
-| 선택한 주제 Chosen |  |
-| 선택 근거 Why |  |
+| --- | --- |
+| 선택한 주제 Chosen | 내 방 옷장의 옷과 새옷의 조합 확인하기 |
+| 선택 근거 Why | 세개중 만약 있다면 무엇을 쓸거냐에서 만장일치로 뽑혔기 때문. |
 
 ## ② 성공 기준 가져오기 / Success criteria from Week 3
 
 | 3주차 성공 기준 원문 Original (Week 3) | 모호한 표현 Vague words |
-|---|---|
-| *(예시) 학생들이 과제 제출 현황을 쉽게 확인할 수 있다* | *쉽게, 확인할 수 있다* |
-|  |  |
+| --- | --- |
+| 피팅된 모델의 사진 또는 영상 | 피팅된 이라는 말이 모호합니다 조금 더 정확하게 말을 하면 핏과 색감이 실제와 90프로 이상 비슷하게 연출되었을때가 더 좋은 표현이라고 생각합니다. |
 
 ## ③ Acceptance Criteria
 
 최소 정상 경로 2개 + 실패 경로 1개. **판정 방법** 칸이 비면 아직 명세가 아닙니다.
-At least two normal paths + one failure path. If "How to check" is empty, it is not yet a spec.
+At least two normal paths + one failure path. If “How to check” is empty, it is not yet a spec.
 
 | # | 경로 Path | EARS 문장 Sentence | 판정 방법 How to check |
-|---|---|---|---|
-| *예시* | *정상* | *WHEN 학생이 과제 목록을 열면 THE 시스템은 SHALL 과목별 미제출 과제를 마감일 순으로 표시한다* | *미제출 과제 3건을 만든 뒤 목록을 열어 마감일 순으로 나오는지 확인* |
-| AC-1 | 정상 Normal | WHEN  THE  SHALL  |  |
-| AC-2 | 정상 Normal | WHEN  THE  SHALL  |  |
-| AC-3 | 실패 Failure | IF  THEN THE  SHALL  |  |
+| --- | --- | --- | --- |
+| AC-1 | 정상 Normal | 옷 종류가 서로 다른 착장 사진 5장을 준비해 하나씩 업로드한다. | 1. 업로드하면 시스템이 에러 없이 아바타 이미지를 생성해 표시하는지 확인한다.
+2. 팀원이 아닌 제3자 평가자에게 원본 사진과 생성된 아바타 이미지를 보여주고 같은 옷을 입은 것으로 알아볼 수 있는가에 대한 답을 예/아니오로 듣는다.                                  3. 3건 이상에서 "예"가 나오면 통과로 판정한다. |
+| AC-2 | 정상 Normal | WHEN 사용자가 마음에 드는 옷을 입력하면 THE 시스템은 자신이 원래 가지고 있던 옷들과 입력한 옷의 색깔을 비교해보며 어울리는 옷을 매칭 SHALL 매칭 시킨 옷들을 가상 아바타에 피팅된 이미지들로 제공 |  |
+| AC-3 | 정상 Normal |  |  |
+| AC-4 | 실패 Failure | 내가 찾는 옷이 없을 때 그 옷의 수치와 디자인을 고려하여 최대한 비슷한 다른 옷을 추천해줍니다. | 1. 입력 데이터:
+- 찾는 옷: 검은색 긴팔 티셔츠, XL 사이즈
+- 패턴: 단색, 둥근 넥
+
+2. 실행:
+- 검색 API 호출 → 결과 0개 반환
+- 추천 시스템 자동 실행
+
+3. 예상 결과:
+- 비슷한 옷 5개 이상 추천 후 사용자가 직접 고르고 결과물 생성
+- 각 상품의 유사도 점수 80% 이상
+
+4. 확인 방법:
+- API 응답에서 추천 상품 확인
+- 각 상품의 수치 비교:
+* 사이즈: XL (정확) 또는 L/2XL (1단계 오차 허용)
+* 색상: 검은색 또는 어두운 색
+* 소매: 긴팔 계열
+- UI에서 "비슷한 상품" 섹션에 표시되는지 확인 |
 
 > 확인할 동작이 더 있으면 AC-4부터 행을 추가해 쓰십시오.
-> If there are more behaviors to check, add rows from AC-4.
-
-- [ ] 이번 활동에서 AI를 사용했다면 `PROMPTS.md`에 기록했습니다 / Logged any AI use in `PROMPTS.md`
+If there are more behaviors to check, add rows from AC-4.
+> 
+- [ ]  이번 활동에서 AI를 사용했다면 `PROMPTS.md`에 기록했습니다 / Logged any AI use in `PROMPTS.md`
 
 ---
 
 > 수업 종료 시 커밋하세요 / Commit this at the end of class
-> `git add docs/week-04.md && git commit -m "docs: 4주차 활동지 작성"`
+`git add docs/week-04.md && git commit -m "docs: 4주차 활동지 작성"`
+>
+
