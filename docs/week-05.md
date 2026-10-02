@@ -2,14 +2,14 @@
 
 **1-page 기획서 / One-page plan**
 
-- 작성일 / Date: 
-- 참여자 / Present: 
+- 작성일 / Date: 2026.10.02 
+- 참여자 / Present: 정준영,허정민,장동호,김현빈
 
 ---
 
 ## ① 주제 확정 / Confirm topic
 
-- 확정 주제 / Topic: 
+- 확정 주제 / Topic: 내 옷장의 옷과  
 - 이유 / Reason: 
 
 ---
