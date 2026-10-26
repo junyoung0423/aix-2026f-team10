@@ -9,8 +9,8 @@
  
 손그림 사진을 올리고 링크하십시오 / Upload a photo and link it.
  
-![architecture](img/week-07-arch.png)
- 
+<img width="1288" height="951" alt="image" src="https://github.com/user-attachments/assets/80a245f9-d6e3-45e7-8d69-9a575b60ea8b" />
+
 > 우리 프로그램은 식당처럼 세 층으로 나뉩니다.
 > **표현**은 손님을 맞는 홀(화면), **로직**은 요리하는 주방(계산·판단), **데이터**는 재료 창고와 납품업체(저장·외부 도구)입니다.
 > 주방은 "이런 재료가 필요하다"는 주문서(포트)만 쓰고, 어느 업체 재료인지는 신경 쓰지 않습니다. 그래서 도구를 바꿔도 주방 코드는 그대로입니다.
