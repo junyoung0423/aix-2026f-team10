@@ -10,7 +10,7 @@
 
 ## 1. 아키텍처 다이어그램 / Architecture Diagram
 
-![표현·로직·데이터 3계층 아키텍처](week-07-architecture.png)
+<img width="3420" height="2805" alt="아키텍쳐 최," src="https://github.com/user-attachments/assets/100b375e-629e-495a-bd64-63d2654cb264" />
 
 다이어그램 파일: [PNG 이미지](week-07-architecture.png) · [확대·편집용 SVG](week-07-architecture.svg)
 
@@ -134,4 +134,3 @@
 #4·#5·#6은 11주차 MVP의 의류 사전 준비에 포함한다. #10·#11의 간단한 API 연동 확인은 11주차 이전 선행 점검으로 수행하되, 전체 실사화·검증 기능의 완료 마감은 13주차로 둔다.
 
 > AI 사용 내용은 `PROMPTS.md`에 기록한다. 실사화가 실패해 3D 미리보기를 제공한 경우에는 실패 상태를 명시하고 최종 실사화 완료와 구분한다.
-<img width="3420" height="2805" alt="아키텍쳐 최," src="https://github.com/user-attachments/assets/100b375e-629e-495a-bd64-63d2654cb264" />
